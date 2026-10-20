@@ -811,6 +811,17 @@
         .velocity-status-label::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #ff6868; box-shadow: 0 0 12px #ff6868; }
         .velocity-status-bar[data-state="up"] .velocity-status-label::before { background: #83d1a4; box-shadow: 0 0 12px #83d1a4; }
         .velocity-status-bar[data-state="unknown"] .velocity-status-label::before { background: var(--text-muted); box-shadow: none; }
+        .velocity-downgrade-button {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 100px;
+            background: var(--accent);
+            color: #140d09;
+            font: 700 0.72rem 'JetBrains Mono', monospace;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+        .velocity-downgrade-button:hover { transform: translateY(-1px); }
         .release-card { padding: 38px; }
         .release-card h2 { margin-bottom: 12px; font-size: 2rem; }
         .release-card > p { color: var(--text-gray); line-height: 1.7; }
@@ -2471,6 +2482,7 @@
             const banner = document.getElementById('velocity-status-bar');
             const statusText = document.getElementById('velocity-status-text');
             const homeStatus = document.getElementById('home-velocity-status');
+            const downgradeUrl = 'https://roblox-downgrader.onrender.com/?channel=LIVE&binaryType=WindowsPlayer&version=version-11f155f3450f4c8e&compressZip=true&compressionLevel=5';
 
             try {
                 const response = await fetch('/api/status', { cache: 'no-store' });
@@ -2490,7 +2502,19 @@
                     `;
                 }
                 if (banner) banner.dataset.state = state;
-                if (statusText) statusText.textContent = bannerLabel;
+                if (statusText) {
+                    if (state === 'down') {
+                        const button = document.createElement('a');
+                        button.href = downgradeUrl;
+                        button.className = 'velocity-downgrade-button';
+                        button.target = '_blank';
+                        button.rel = 'noopener noreferrer';
+                        button.textContent = 'DOWN (DOWNGRADE REQUIRED)';
+                        statusText.replaceChildren(button);
+                    } else {
+                        statusText.textContent = bannerLabel;
+                    }
+                }
                 if (homeStatus) {
                     homeStatus.dataset.state = state;
                     homeStatus.textContent = homeLabel;
