@@ -68,6 +68,7 @@
         .report-tooltip-status { margin: 0; color: var(--green); font-size: 0.85rem; font-weight: 700; }
         .report-tooltip-status[data-state="down"] { color: var(--red); }
         .report-tooltip-duration { margin: 7px 0 0; color: var(--muted); font-size: 0.77rem; }
+        .report-tooltip-date { margin: 7px 0 0; color: var(--subtle); font: 0.68rem 'JetBrains Mono', monospace; }
         .timeline-labels { display: flex; justify-content: space-between; min-width: 650px; margin-top: 7px; color: var(--subtle); font: 0.65rem 'JetBrains Mono', monospace; }
         .history-key { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 17px; color: var(--muted); font-size: 0.75rem; }
         .key-item { display: inline-flex; align-items: center; gap: 6px; }
@@ -237,7 +238,7 @@
             return days;
         }
 
-        function showReportTooltip(bar, state, downtime) {
+        function showReportTooltip(bar, day, state, downtime) {
             const tooltip = document.getElementById('report-tooltip');
             tooltip.replaceChildren();
 
@@ -247,14 +248,23 @@
             status.textContent = state === 'up' ? 'Operational' : state === 'down' ? 'Down' : 'No report data';
             tooltip.append(status);
 
-            if (state === 'up' || state === 'down') {
+            if (state === 'down') {
                 const durationLabel = document.createElement('p');
                 durationLabel.className = 'report-tooltip-duration';
-                durationLabel.textContent = state === 'down'
-                    ? `Downtime: ${downtime === null ? 'Unknown' : formatDuration(downtime)}`
-                    : `Downtime: ${downtime === null ? 'None recorded' : formatDuration(downtime)}`;
+                durationLabel.textContent = `Downtime: ${downtime === null ? 'Unknown' : formatDuration(downtime)}`;
                 tooltip.append(durationLabel);
             }
+
+            const dateLabel = document.createElement('p');
+            dateLabel.className = 'report-tooltip-date';
+            dateLabel.textContent = day.toLocaleDateString(undefined, {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'UTC'
+            });
+            tooltip.append(dateLabel);
 
             tooltip.hidden = false;
             tooltip.setAttribute('aria-hidden', 'false');
@@ -313,11 +323,11 @@
                 bar.className = 'day';
                 bar.dataset.state = state;
                 const stateDescription = state === 'up' ? 'Operational' : state === 'down' ? 'Down' : 'No report data';
-                const downtimeDescription = downtime === null ? '' : `; downtime ${formatDuration(downtime)}`;
+                const downtimeDescription = state === 'down' && downtime !== null ? `; downtime ${formatDuration(downtime)}` : '';
                 bar.setAttribute('aria-label', `${formatDay(day)}: ${stateDescription}${downtimeDescription}`);
                 bar.setAttribute('aria-describedby', 'report-tooltip');
-                bar.addEventListener('mouseenter', () => showReportTooltip(bar, state, downtime));
-                bar.addEventListener('focus', () => showReportTooltip(bar, state, downtime));
+                bar.addEventListener('mouseenter', () => showReportTooltip(bar, day, state, downtime));
+                bar.addEventListener('focus', () => showReportTooltip(bar, day, state, downtime));
                 bar.addEventListener('mouseleave', hideReportTooltip);
                 bar.addEventListener('blur', hideReportTooltip);
                 timeline.append(bar);
