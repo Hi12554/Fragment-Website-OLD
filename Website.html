@@ -917,6 +917,7 @@
         .incident-entry-status { color: #7fe0ac; font: 700 0.7rem 'JetBrains Mono', monospace; text-transform: uppercase; }
         .incident-entry-status[data-state="ongoing"],
         .incident-entry-status[data-state="down"] { color: #ff8585; }
+        .incident-entry-status[data-state="maintenance"] { color: #ffcc00; }
         .incident-entry-summary { margin-top: 10px; color: var(--text-gray); line-height: 1.6; }
         .incident-entry-dates { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; color: var(--text-muted); font: 0.7rem 'JetBrains Mono', monospace; }
         .status-row {
@@ -2560,7 +2561,7 @@
                     service.textContent = typeof incident.service === 'string' ? incident.service : 'Service update';
 
                     const status = document.createElement('span');
-                    const statusLabels = { ongoing: 'Ongoing', resolved: 'Resolved', down: 'Down', up: 'Up' };
+                    const statusLabels = { ongoing: 'Ongoing', maintenance: 'Maintenance', resolved: 'Resolved', down: 'Down', up: 'Up' };
                     const statusState = Object.hasOwn(statusLabels, incident.status) ? incident.status : 'resolved';
                     status.className = 'incident-entry-status';
                     status.dataset.state = statusState;
