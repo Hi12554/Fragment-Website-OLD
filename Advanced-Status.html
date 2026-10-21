@@ -101,7 +101,7 @@
             <a class="back-link" href="/status">Back to status page</a>
         </nav>
         <section class="overview" aria-labelledby="page-title">
-            <p class="eyebrow">Service status · 90 day history</p>
+            <p class="eyebrow">Service status · 60 day history</p>
             <h1 id="page-title">Loading service status…</h1>
             <p class="updated" id="updated-time"></p>
             <div class="services" id="services" aria-live="polite"></div>
@@ -117,7 +117,7 @@
         <section class="panel" aria-labelledby="incident-heading">
             <div class="panel-heading">
                 <h2 id="incident-heading">Incident reports</h2>
-                <span class="panel-caption" id="incident-range">Past 90 days</span>
+                <span class="panel-caption" id="incident-range">Past 60 days</span>
             </div>
             <div class="incident-list" id="incident-list" aria-live="polite">
                 <p class="empty">Loading incident reports…</p>
@@ -125,7 +125,7 @@
         </section>
     </main>
     <script>
-        const DAYS = 90;
+        const DAYS = 60;
         const dateKey = date => `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
         const addDays = (date, days) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days));
         const validState = state => ['up', 'down', 'maintenance'].includes(state) ? state : 'unknown';
@@ -145,29 +145,30 @@
             return value.slice(0, 10);
         }
 
-        function makeTimeline(serviceName, incidents, today, startDay) {
+        function makeTimeline(serviceName, incidents, startDay) {
             const events = incidents
                 .map((report, index) => ({ report, index, day: getReportDay(report) }))
                 .filter(item => item.day && item.report.service === serviceName)
                 .sort((a, b) => a.day.localeCompare(b.day) || b.index - a.index);
             let eventIndex = 0;
-            let state = 'unknown';
+            let latestEvent = null;
             const days = [];
 
             for (let offset = 0; offset < DAYS; offset += 1) {
                 const day = addDays(startDay, offset);
                 const key = dateKey(day);
-                const dayStates = [];
+                const dayReports = [];
                 while (eventIndex < events.length && events[eventIndex].day <= key) {
                     const event = events[eventIndex];
-                    state = validState(event.report.status);
-                    if (event.day === key) dayStates.push(state);
+                    latestEvent = event;
+                    if (event.day === key) dayReports.push(event.report);
                     eventIndex += 1;
                 }
-                let dayState = dayStates.includes('down') && dayStates.includes('up')
+                const dayStates = dayReports.map(report => validState(report.status));
+                const dayState = dayStates.includes('down') && dayStates.includes('up')
                     ? 'partial'
-                    : (dayStates[dayStates.length - 1] || state);
-                days.push({ day, state: dayState });
+                    : (dayStates[dayStates.length - 1] || validState(latestEvent?.report.status));
+                days.push({ day, state: dayState, reports: dayReports, latestEvent });
             }
             return days;
         }
@@ -184,13 +185,13 @@
             name.textContent = serviceName;
             const stateLabel = document.createElement('span');
             stateLabel.className = 'state-label';
-            stateLabel.dataset.state = validState(currentState);
+            stateLabel.dataset.state = currentState;
             const dot = document.createElement('span');
             dot.className = 'dot';
             dot.setAttribute('aria-hidden', 'true');
             const stateText = document.createElement('span');
-            const labels = { up: 'Operational', down: 'Down', maintenance: 'Maintenance', unknown: 'Status unavailable' };
-            stateText.textContent = labels[validState(currentState)];
+            const statusLabels = { up: 'Operational', down: 'Down', maintenance: 'Maintenance', unknown: 'Status unavailable' };
+            stateText.textContent = statusLabels[currentState];
             stateLabel.append(dot, stateText);
             heading.append(name, stateLabel);
 
@@ -202,23 +203,33 @@
             const scroller = document.createElement('div');
             scroller.className = 'timeline-scroll';
             scroller.setAttribute('role', 'group');
-            scroller.setAttribute('aria-label', `${serviceName} daily status for the past 90 days`);
+            scroller.setAttribute('aria-label', `${serviceName} daily status for the past 60 days`);
             const timeline = document.createElement('div');
             timeline.className = 'timeline';
-            makeTimeline(serviceName, incidents, today, startDay).forEach(({ day, state }) => {
+            const timelineLabels = { up: 'Operational', down: 'Down', maintenance: 'Maintenance', unknown: 'No report data' };
+            makeTimeline(serviceName, incidents, startDay).forEach(({ day, state, reports, latestEvent }) => {
                 const bar = document.createElement('span');
                 bar.className = 'day';
                 bar.dataset.state = state;
-                const stateDescription = state === 'partial' ? 'Multiple status reports' : labels[state];
-                bar.title = `${formatDay(day)}: ${stateDescription}`;
-                bar.setAttribute('aria-label', `${formatDay(day)}: ${stateDescription}`);
+                const stateDescription = state === 'partial' ? 'Multiple reports' : timelineLabels[state];
+                const details = reports.length
+                    ? reports.map(report => {
+                        const reportState = validState(report.status);
+                        const reportDate = report.reportedAtLabel || report.startedAtLabel || getReportDay(report);
+                        return `${timelineLabels[reportState]}${reportDate ? ` · ${reportDate}` : ''}${report.summary ? `\n${report.summary}` : ''}`;
+                    }).join('\n\n')
+                    : latestEvent
+                        ? `Carried forward from ${latestEvent.report.reportedAtLabel || latestEvent.report.startedAtLabel || latestEvent.day}: ${timelineLabels[validState(latestEvent.report.status)]}${latestEvent.report.summary ? `\n${latestEvent.report.summary}` : ''}`
+                        : 'No incident report for this service yet.';
+                bar.title = `${formatDay(day)}: ${stateDescription}\n\n${details}`;
+                bar.setAttribute('aria-label', bar.title);
                 timeline.append(bar);
             });
             scroller.append(timeline);
             const labelsRow = document.createElement('div');
             labelsRow.className = 'timeline-labels';
             const oldest = document.createElement('span');
-            oldest.textContent = `${formatDay(startDay)} · 90 days ago`;
+            oldest.textContent = `${formatDay(startDay)} · 60 days ago`;
             const latest = document.createElement('span');
             latest.textContent = `Today · ${formatDay(today)}`;
             labelsRow.append(oldest, latest);
@@ -271,11 +282,11 @@
                     const day = getReportDay(report);
                     return day && day >= dateKey(startDay) && day <= dateKey(todayUtc);
                 });
-                const serviceNames = [...new Set(incidents
+                const serviceNames = [...new Set(allIncidents
                     .map(report => report.service)
                     .filter(service => typeof service === 'string' && service.trim()))];
                 const currentStates = serviceNames.map(serviceName =>
-                    validState(incidents.find(report => report.service === serviceName)?.status)
+                    validState(allIncidents.find(report => report.service === serviceName)?.status)
                 );
                 document.getElementById('page-title').textContent = serviceNames.length === 0
                     ? 'No recent incident reports'
@@ -284,13 +295,13 @@
                         : 'Service incident report';
                 servicesElement.replaceChildren();
                 serviceNames.forEach(serviceName => {
-                    servicesElement.append(renderService(serviceName, incidents, todayUtc, startDay));
+                    servicesElement.append(renderService(serviceName, allIncidents, todayUtc, startDay));
                 });
                 incidentsElement.replaceChildren();
                 if (incidents.length === 0) {
                     const empty = document.createElement('p');
                     empty.className = 'empty';
-                    empty.textContent = 'No incident reports were recorded in this 90-day period.';
+                    empty.textContent = 'No incident reports were recorded in this 60-day period.';
                     incidentsElement.append(empty);
                 } else {
                     incidents.forEach(report => incidentsElement.append(renderIncident(report)));
