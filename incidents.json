@@ -23,7 +23,7 @@
     },
     {
       "service": "Discord Bot",
-      "status": "down",
+      "status": "maintenance",
       "reportedAt": "2026-10-20",
       "reportedAtLabel": "Tuesday, October 20, 2026 7:19 PM CDT",
       "summary": "The Discord bot is temporarily unavailable due to maintenance. Commands may not work during this time."
