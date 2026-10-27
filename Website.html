@@ -1749,6 +1749,10 @@
                     <span id="discord-bot-status"><span class="status-indicator unknown"></span>Status unavailable</span>
                 </div>
                 <div class="status-row">
+                    <span>External</span>
+                    <span id="external-status"><span class="status-indicator unknown"></span>Status unavailable</span>
+                </div>
+                <div class="status-row">
                     <span>Website</span>
                     <span><span class="status-indicator up"></span>Operational</span>
                 </div>
@@ -2510,19 +2514,20 @@
 
         function loadStatusPage() {
             loadVelocityStatus();
-            loadDiscordBotStatus();
+            loadReportedServiceStatus('discord-bot-status', 'bot-status');
+            loadReportedServiceStatus('external-status', 'External-status');
             loadIncidentHistory();
         }
 
-        async function loadDiscordBotStatus() {
-            const statusElement = document.getElementById('discord-bot-status');
+        async function loadReportedServiceStatus(elementId, statusKey) {
+            const statusElement = document.getElementById(elementId);
 
             try {
                 const response = await fetch('/api/bot-status', { cache: 'no-store' });
                 if (!response.ok) throw new Error('Bot status request failed');
                 const data = await response.json();
-                const status = data && ['up', 'down', 'maintenance'].includes(data['bot-status'])
-                    ? data['bot-status']
+                const status = data && ['up', 'down', 'maintenance'].includes(data[statusKey])
+                    ? data[statusKey]
                     : 'unknown';
                 const labels = { up: 'Operational', down: 'Down', maintenance: 'Maintenance', unknown: 'Status unavailable' };
                 const indicator = document.createElement('span');
