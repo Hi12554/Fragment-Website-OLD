@@ -1550,7 +1550,7 @@
                         <h2>Fragment External v1.0.0</h2>
                         <p>The latest Fragment External version.</p>
                         <div class="release-meta">
-                            <div><span>Supported Roblox version</span><strong>version-11f155f3450f4c8e</strong></div>
+                            <div><span>Supported Roblox version</span><strong>version-5a21b87bbc2641cf</strong></div>
                             <div><span>VirusTotal scan</span><strong>0/68 detections</strong></div>
                             <div class="release-changelog-tile"><span>v1.0.0 Changelog</span><ul class="release-changelog-list"><li>Initial release</li></ul></div>
                         </div>
@@ -1611,6 +1611,15 @@
                 <div class="release-entry">
                     <h3>v1.0.0</h3><time>June 3, 2026</time>
                     <ul><li>Release.</li></ul>
+                </div>
+                </div>
+            </div>
+            <div class="release-history" id="external-release-history">
+                <button class="release-history-toggle" type="button" onclick="toggleReleaseHistory('external-release-history')" aria-expanded="false" aria-controls="external-release-history-content"><span class="release-history-heading"><span>Fragment External Release History</span><span class="release-current-version">Current version: v1.0.0</span></span></button>
+                <div class="release-history-content" id="external-release-history-content">
+                <div class="release-entry">
+                    <h3>v1.0.0</h3>
+                    <ul><li>Initial release</li></ul>
                 </div>
                 </div>
             </div>
@@ -2247,8 +2256,8 @@
             document.body.style.overflow = '';
         }
 
-        function toggleReleaseHistory() {
-            const history = document.getElementById('release-history');
+        function toggleReleaseHistory(historyId = 'release-history') {
+            const history = document.getElementById(historyId);
             const toggle = history.querySelector('.release-history-toggle');
             const isOpen = history.classList.toggle('open');
             toggle.setAttribute('aria-expanded', isOpen);
