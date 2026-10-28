@@ -425,6 +425,16 @@
                 if (!response.ok) throw new Error('Current status request failed');
                 const data = await response.json();
                 const currentState = validState(data && data['External-status']);
+                const statusLabels = { up: 'Operational', down: 'Down', maintenance: 'Maintenance', unknown: 'Status unavailable' };
+                const reportedExternal = [...document.querySelectorAll('#services .service-card')]
+                    .find(card => card.querySelector('.service-name')?.textContent === 'External');
+                if (reportedExternal) {
+                    const stateLabel = reportedExternal.querySelector('.state-label');
+                    stateLabel.dataset.state = currentState;
+                    stateLabel.lastChild.textContent = statusLabels[currentState];
+                    return;
+                }
+
                 const card = document.createElement('article');
                 card.className = 'service-card';
                 const heading = document.createElement('div');
@@ -439,7 +449,6 @@
                 dot.className = 'dot';
                 dot.setAttribute('aria-hidden', 'true');
                 const stateText = document.createElement('span');
-                const statusLabels = { up: 'Operational', down: 'Down', maintenance: 'Maintenance', unknown: 'Status unavailable' };
                 stateText.textContent = statusLabels[currentState];
                 stateLabel.append(dot, stateText);
                 heading.append(name, stateLabel);
@@ -506,8 +515,7 @@
             }
         }
 
-        loadCurrentStatus();
-        loadReport();
+        loadReport().then(loadCurrentStatus);
     </script>
 </body>
 </html>
