@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fragment | An Executor Made By the People, For the People</title>
-    <link rel="icon" type="image/png" href="/fragment-halloween.png">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%232f9b62' d='M16 2 6 14h5L4 23h9v7h6v-7h9l-7-9h5z'/%3E%3Ccircle cx='16' cy='12' r='2' fill='%23c24451'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -21,70 +21,83 @@
     </script>
     <style>
         :root {
-            --bg: #0c0b0a;
-            --text-white: #f2efe8;
-            --text-gray: #b7b0a7;
-            --text-muted: #7d736d;
-            --accent: #d77a2d;
-            --accent-strong: #c7651d;
-            --accent-2: #8b5e37;
+            --bg: #08110d;
+            --text-white: #f1f5f2;
+            --text-gray: #b1c0b7;
+            --text-muted: #74877b;
+            --accent: #2f9b62;
+            --accent-strong: #247849;
+            --accent-2: #c24451;
             --card-bg: #121212;
             --card-border: rgba(255, 255, 255, 0.08);
             --transition: all 0.3s ease;
             --glass: rgba(255, 255, 255, 0.025);
-            --pumpkin-soft: #f0a15d;
+            --holiday-soft: #8fddb1;
             color-scheme: dark;
         }
 
         :root[data-theme="light"] {
-            --bg: #f5f3ef;
-            --text-white: #24211e;
-            --text-gray: #5d5751;
-            --text-muted: #817970;
-            --accent: #d77a2d;
-            --accent-strong: #bc611d;
-            --accent-2: #8b5e37;
+            --bg: #f4f8f5;
+            --text-white: #202c24;
+            --text-gray: #53645a;
+            --text-muted: #77877d;
+            --accent: #258650;
+            --accent-strong: #1e6e42;
+            --accent-2: #b93645;
             --card-bg: #fff;
-            --card-border: rgba(51, 42, 34, 0.14);
+            --card-border: rgba(35, 72, 50, 0.14);
             --glass: rgba(255, 255, 255, 0.72);
-            --pumpkin-soft: #a95113;
+            --holiday-soft: #287d4c;
             color-scheme: light;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
         body { 
-            background: linear-gradient(180deg, #0a0a0a 0%, #111111 100%);
+            background: linear-gradient(180deg, #07110d 0%, #101a14 100%);
             color: var(--text-white); 
             overflow-x: hidden; 
             scroll-behavior: smooth; 
         }
 
         :root[data-theme="light"] body {
-            background: linear-gradient(180deg, #fbfaf8 0%, #f0ede8 100%);
+            background: linear-gradient(180deg, #fbfdfb 0%, #edf4ef 100%);
         }
 
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background:
-                radial-gradient(circle at 18% 8%, rgba(215, 122, 45, 0.12), transparent 18%),
-                radial-gradient(circle at 78% 12%, rgba(210, 130, 70, 0.07), transparent 16%);
+                radial-gradient(circle at 18% 8%, rgba(47, 155, 98, 0.12), transparent 18%),
+                radial-gradient(circle at 78% 12%, rgba(194, 68, 81, 0.07), transparent 16%);
             opacity: 1; pointer-events: none; z-index: 9999;
         }
 
         body::after {
             content: ""; position: fixed; inset: 0; pointer-events: none;
-            background: linear-gradient(90deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 32px);
+            background:
+                radial-gradient(circle, rgba(255, 255, 255, 0.62) 1px, transparent 1.6px) 0 0 / 70px 70px,
+                radial-gradient(circle, rgba(195, 226, 255, 0.42) 1px, transparent 1.6px) 35px 35px / 110px 110px;
             opacity: 0.2;
+            animation: snowfall 18s linear infinite;
         }
 
         :root[data-theme="light"] body::before {
             background:
-                radial-gradient(circle at 18% 8%, rgba(215, 122, 45, 0.1), transparent 18%),
-                radial-gradient(circle at 78% 12%, rgba(210, 130, 70, 0.06), transparent 16%);
+                radial-gradient(circle at 18% 8%, rgba(47, 155, 98, 0.1), transparent 18%),
+                radial-gradient(circle at 78% 12%, rgba(194, 68, 81, 0.06), transparent 16%);
         }
         :root[data-theme="light"] body::after {
-            background: linear-gradient(90deg, rgba(71, 55, 39, 0.025) 0, rgba(71, 55, 39, 0.025) 1px, transparent 1px, transparent 32px);
+            background:
+                radial-gradient(circle, rgba(102, 139, 116, 0.36) 1px, transparent 1.6px) 0 0 / 70px 70px,
+                radial-gradient(circle, rgba(113, 153, 183, 0.28) 1px, transparent 1.6px) 35px 35px / 110px 110px;
+        }
+
+        @keyframes snowfall {
+            to { background-position: 0 70px, 35px 145px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body::after { animation: none; }
         }
 
         /* NAVIGATION SYSTEM */
@@ -182,7 +195,7 @@
         .mobile-menu-toggle[aria-expanded="true"] span:first-child { transform: translateY(7px) rotate(45deg); }
         .mobile-menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
         .mobile-menu-toggle[aria-expanded="true"] span:last-child { transform: translateY(-7px) rotate(-45deg); }
-        .mobile-menu-toggle:focus-visible { outline: 2px solid var(--pumpkin-soft); outline-offset: 3px; }
+        .mobile-menu-toggle:focus-visible { outline: 2px solid var(--holiday-soft); outline-offset: 3px; }
         
         .nav-links a {
             color: var(--text-gray); 
@@ -220,8 +233,8 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        .theme-toggle:hover { border-color: rgba(215, 122, 45, 0.55); }
-        .theme-toggle:focus-visible { outline: 2px solid var(--pumpkin-soft); outline-offset: 3px; }
+        .theme-toggle:hover { border-color: rgba(47, 155, 98, 0.55); }
+        .theme-toggle:focus-visible { outline: 2px solid var(--holiday-soft); outline-offset: 3px; }
         .theme-toggle-icon { font-size: 1rem; line-height: 1; }
 
         .nav-btn {
@@ -267,10 +280,10 @@
             gap: 8px;
             margin-bottom: 24px;
             padding: 8px 14px;
-            border: 1px solid rgba(215, 122, 45, 0.22);
+            border: 1px solid rgba(47, 155, 98, 0.22);
             border-radius: 100px;
-            color: var(--pumpkin-soft);
-            background: rgba(215, 122, 45, 0.05);
+            color: var(--holiday-soft);
+            background: rgba(47, 155, 98, 0.05);
             font: 700 0.7rem 'JetBrains Mono', monospace;
             letter-spacing: 1.2px;
         }
@@ -284,10 +297,10 @@
             box-shadow: 0 0 10px currentColor;
         }
 
-        .halloween-mark {
+        .christmas-mark {
             display: inline-block;
             margin-top: 8px;
-            color: var(--pumpkin-soft);
+            color: var(--holiday-soft);
             font-size: 0.9rem;
             letter-spacing: 0.26em;
             text-transform: uppercase;
@@ -366,8 +379,8 @@
             transition: var(--transition);
         }
         .executor-official-links a:hover {
-            border-color: rgba(215, 122, 45, 0.45);
-            background: rgba(215, 122, 45, 0.12);
+            border-color: rgba(47, 155, 98, 0.45);
+            background: rgba(47, 155, 98, 0.12);
         }
 
         .executor-safety {
@@ -432,9 +445,9 @@
             transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
         }
         .executor-search-field:focus-within {
-            border-color: rgba(240, 161, 93, 0.65);
+            border-color: rgba(143, 221, 177, 0.65);
             background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 0 3px rgba(215, 122, 45, 0.14);
+            box-shadow: 0 0 0 3px rgba(47, 155, 98, 0.14);
         }
         .executor-search-field input {
             position: relative;
@@ -484,7 +497,7 @@
             animation: executorCaretBlink 1s steps(2, start) infinite;
         }
         @keyframes executorCharacterType {
-            from { opacity: 0; color: var(--pumpkin-soft); }
+            from { opacity: 0; color: var(--holiday-soft); }
             to { opacity: 1; color: var(--text-white); }
         }
         @keyframes executorCaretBlink { to { visibility: hidden; } }
@@ -493,7 +506,7 @@
             -webkit-text-fill-color: var(--text-muted);
         }
         .executor-search > span:first-child { transition: color 180ms ease; }
-        .executor-search:focus-within > span:first-child { color: var(--pumpkin-soft); }
+        .executor-search:focus-within > span:first-child { color: var(--holiday-soft); }
         .executor-search-field input:focus-visible { outline: none; }
 
         .executor-filter {
@@ -523,7 +536,7 @@
             background: var(--accent);
         }
         .executor-filter button:focus-visible {
-            outline: 2px solid var(--pumpkin-soft);
+            outline: 2px solid var(--holiday-soft);
             outline-offset: 2px;
         }
         .executor-card[hidden] { display: none; }
@@ -622,9 +635,9 @@
             max-width: 100%;
             margin-top: 24px;
             padding: 12px 16px;
-            border: 1px solid rgba(215, 122, 45, 0.22);
+            border: 1px solid rgba(47, 155, 98, 0.22);
             border-radius: 12px;
-            background: rgba(215, 122, 45, 0.05);
+            background: rgba(47, 155, 98, 0.05);
             text-align: left;
         }
 
@@ -633,7 +646,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--pumpkin-soft);
+            background: var(--holiday-soft);
             box-shadow: 0 0 10px currentColor;
         }
 
@@ -648,7 +661,7 @@
         }
 
         .roblox-version-label {
-            color: var(--pumpkin-soft);
+            color: var(--holiday-soft);
             font: 700 0.65rem 'JetBrains Mono', monospace;
         }
 
@@ -909,7 +922,7 @@
         .incident-history-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
         .incident-history h2 { font-size: 1.4rem; }
         .advanced-status-link { flex: 0 0 auto; padding: 9px 13px; border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-white); background: var(--glass); text-decoration: none; font-size: 0.8rem; }
-        .advanced-status-link:hover { border-color: var(--accent); color: var(--pumpkin-soft); }
+        .advanced-status-link:hover { border-color: var(--accent); color: var(--holiday-soft); }
         .incident-history-message { margin-bottom: 14px; color: var(--text-gray); }
         .incident-list { display: grid; gap: 12px; }
         .incident-entry { padding: 18px 20px; border: 1px solid var(--card-border); border-radius: 12px; background: var(--glass); }
@@ -961,7 +974,7 @@
         .web-executor-page-heading-label {
             display: block;
             margin-bottom: 8px;
-            color: var(--pumpkin-soft);
+            color: var(--holiday-soft);
             font: 600 0.68rem 'JetBrains Mono', monospace;
             letter-spacing: 0.12em;
             text-transform: uppercase;
@@ -1090,7 +1103,7 @@
             transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
         }
         .web-executor-toolbar button:hover:not(:disabled) {
-            border-color: rgba(240, 161, 93, 0.55);
+            border-color: rgba(143, 221, 177, 0.55);
             background: rgba(255, 255, 255, 0.08);
         }
         .web-executor-toolbar button:active:not(:disabled) { transform: translateY(1px); }
@@ -1100,8 +1113,8 @@
             background: var(--accent);
         }
         .web-executor-toolbar #web-executor-execute:hover:not(:disabled) {
-            border-color: var(--pumpkin-soft);
-            background: var(--pumpkin-soft);
+            border-color: var(--holiday-soft);
+            background: var(--holiday-soft);
         }
         .web-executor-toolbar button:disabled { cursor: wait; opacity: 0.65; }
         .web-executor-editor-wrap { position: relative; }
@@ -1142,9 +1155,9 @@
             font: 0.8rem/1.75 'JetBrains Mono', monospace;
             tab-size: 4;
         }
-        .web-executor-editor:focus-visible { box-shadow: inset 0 0 0 1px rgba(240, 161, 93, 0.45); }
+        .web-executor-editor:focus-visible { box-shadow: inset 0 0 0 1px rgba(143, 221, 177, 0.45); }
         .web-executor-editor::placeholder { color: #777784; }
-        .web-executor-shell button:focus-visible { outline: 2px solid var(--pumpkin-soft); outline-offset: -2px; }
+        .web-executor-shell button:focus-visible { outline: 2px solid var(--holiday-soft); outline-offset: -2px; }
         .web-executor-help {
             position: fixed;
             inset: 50% auto auto 50%;
@@ -1184,7 +1197,7 @@
             background: var(--accent);
         }
         .web-executor-help [hidden] { display: none; }
-        .web-executor-help button:focus-visible { outline: 2px solid var(--pumpkin-soft); outline-offset: 2px; }
+        .web-executor-help button:focus-visible { outline: 2px solid var(--holiday-soft); outline-offset: 2px; }
         .web-executor-mobile-notice {
             max-width: 620px;
             margin: 48px auto;
@@ -1437,10 +1450,10 @@
             .mobile-download-notice {
                 display: block;
                 padding: 14px 16px;
-                border: 1px solid rgba(215, 122, 45, 0.35);
+                border: 1px solid rgba(47, 155, 98, 0.35);
                 border-radius: 12px;
-                color: var(--pumpkin-soft);
-                background: rgba(215, 122, 45, 0.08);
+                color: var(--holiday-soft);
+                background: rgba(47, 155, 98, 0.08);
                 font-size: 0.9rem;
                 font-family: 'Inter', sans-serif;
                 line-height: 1.5;
@@ -1487,7 +1500,7 @@
         <section id="home" class="page active">
             <div class="section-center">
                 <div class="home-velocity-status" id="home-velocity-status" data-state="loading" role="status" aria-live="polite">CHECKING...</div>
-                <h1 style="margin-top: 18px;">Fragment Executor<br><span class="halloween-mark">Halloween Theme</span></h1>
+                <h1 style="margin-top: 18px;">Fragment Executor<br><span class="christmas-mark">Christmas Theme</span></h1>
                 <p>A free and keyless Roblox executor made by the people, for the people.</p>
                 <div class="roblox-version" id="roblox-version" role="status" aria-live="polite" data-state="loading">
                     <span class="roblox-version-dot" aria-hidden="true"></span>
