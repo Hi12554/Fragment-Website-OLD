@@ -3,34 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0c0b0a">
+    <meta name="theme-color" content="#0b1710">
     <title>Detailed Service Status | Fragment</title>
-    <link rel="icon" type="image/png" href="/fragment-halloween.png">
+    <link rel="icon" type="image/png" href="/Christmas-logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             color-scheme: dark;
-            --bg: #0c0b0a;
-            --surface: #141210;
-            --surface-soft: rgba(255, 255, 255, 0.025);
-            --border: rgba(255, 255, 255, 0.09);
-            --text: #f2efe8;
-            --muted: #aaa198;
-            --subtle: #77716b;
-            --accent: #d77a2d;
-            --green: #35ce87;
-            --red: #f05c5c;
-            --yellow: #efbb45;
+            --bg: #0b1710;
+            --surface: #14251a;
+            --surface-soft: rgba(255, 255, 255, 0.035);
+            --border: rgba(200, 231, 210, 0.13);
+            --text: #fffaf7;
+            --muted: #c7d4ca;
+            --subtle: #94a99a;
+            --accent: #d72f46;
+            --green: #35b86f;
+            --red: #ff6477;
+            --yellow: #f0c45a;
+            --neutral: #355342;
         }
         * { box-sizing: border-box; }
         body {
             min-height: 100vh;
             margin: 0;
             background:
-                radial-gradient(ellipse at 50% -15%, rgba(215, 122, 45, 0.13), transparent 46%),
-                linear-gradient(180deg, #0a0908, var(--bg) 420px);
+                radial-gradient(ellipse at 12% 0%, rgba(215, 47, 70, 0.18), transparent 42%),
+                radial-gradient(ellipse at 92% 10%, rgba(35, 128, 77, 0.15), transparent 38%),
+                linear-gradient(180deg, #102519, var(--bg) 460px);
             color: var(--text);
             font-family: Inter, sans-serif;
         }
@@ -54,19 +56,19 @@
         .service-name { display: flex; align-items: center; gap: 10px; font-weight: 600; }
         .state-label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.8rem; }
         .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--subtle); }
-        [data-state="up"] .dot { background: var(--green); box-shadow: 0 0 10px rgba(53, 206, 135, 0.45); }
-        [data-state="down"] .dot { background: var(--red); box-shadow: 0 0 10px rgba(240, 92, 92, 0.45); }
+        [data-state="up"] .dot { background: var(--green); box-shadow: 0 0 10px rgba(53, 184, 111, 0.45); }
+        [data-state="down"] .dot { background: var(--red); box-shadow: 0 0 10px rgba(255, 100, 119, 0.45); }
         [data-state="maintenance"] .dot { background: var(--yellow); }
         .service-note { margin: 14px 0 10px; color: var(--muted); font-size: 0.77rem; }
         .timeline-scroll { min-width: 0; overflow-x: auto; padding: 2px 0 6px; }
         .timeline { display: grid; grid-template-columns: repeat(60, minmax(3px, 1fr)); gap: 3px; min-width: 650px; }
-        .day { position: relative; height: 24px; padding: 0; border: 0; border-radius: 3px; background: #35332f; cursor: pointer; }
+        .day { position: relative; height: 24px; padding: 0; border: 0; border-radius: 3px; background: var(--neutral); cursor: pointer; }
         .day:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-        .day[data-state="up"] { background: #35a977; }
-        .day[data-state="down"] { background: #d95050; }
-        .day[data-state="maintenance"] { background: #d6a632; }
-        .day[data-state="partial"] { background: linear-gradient(180deg, #d95050 0 48%, #35a977 52%); }
-        .report-tooltip { position: fixed; z-index: 20; width: min(310px, calc(100vw - 24px)); padding: 13px 15px; border: 1px solid rgba(215, 122, 45, 0.48); border-radius: 11px; background: #191612; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55); color: var(--text); pointer-events: none; }
+        .day[data-state="up"] { background: var(--green); }
+        .day[data-state="down"] { background: var(--red); }
+        .day[data-state="maintenance"] { background: var(--yellow); }
+        .day[data-state="partial"] { background: linear-gradient(180deg, var(--red) 0 48%, var(--green) 52%); }
+        .report-tooltip { position: fixed; z-index: 20; width: min(310px, calc(100vw - 24px)); padding: 13px 15px; border: 1px solid rgba(255, 100, 119, 0.55); border-radius: 11px; background: #14251a; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55); color: var(--text); pointer-events: none; }
         .report-tooltip[hidden] { display: none; }
         .report-tooltip-status { margin: 0; color: var(--green); font-size: 0.85rem; font-weight: 700; }
         .report-tooltip-status[data-state="down"] { color: var(--red); }
@@ -76,11 +78,11 @@
         .timeline-labels { display: flex; justify-content: space-between; min-width: 650px; margin-top: 7px; color: var(--subtle); font: 0.65rem 'JetBrains Mono', monospace; }
         .history-key { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 17px; color: var(--muted); font-size: 0.75rem; }
         .key-item { display: inline-flex; align-items: center; gap: 6px; }
-        .key-swatch { width: 9px; height: 9px; border-radius: 2px; background: #35332f; }
-        .key-swatch.up { background: #35a977; }
-        .key-swatch.down { background: #d95050; }
-        .key-swatch.partial { background: linear-gradient(90deg, #d6a632 0 50%, #35a977 50%); }
-        .key-swatch.maintenance { background: #d6a632; }
+        .key-swatch { width: 9px; height: 9px; border-radius: 2px; background: var(--neutral); }
+        .key-swatch.up { background: var(--green); }
+        .key-swatch.down { background: var(--red); }
+        .key-swatch.partial { background: linear-gradient(90deg, var(--yellow) 0 50%, var(--green) 50%); }
+        .key-swatch.maintenance { background: var(--yellow); }
         .notice { margin: 18px 0 0; color: var(--subtle); font-size: 0.78rem; line-height: 1.6; }
         .panel { margin-top: 24px; padding: 24px; }
         .panel-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; }
@@ -347,7 +349,7 @@
                 bar.className = 'day';
                 bar.dataset.state = segments.length > 1 ? 'partial' : state;
                 if (segments.length > 1) {
-                    const colors = { up: '#35a977', down: '#d95050', maintenance: '#d6a632', unknown: '#35332f' };
+                    const colors = { up: '#35b86f', down: '#ff6477', maintenance: '#f0c45a', unknown: '#355342' };
                     const segmentSize = 100 / segments.length;
                     const stops = segments.map((segment, index) => {
                         const start = (index * segmentSize).toFixed(2);
