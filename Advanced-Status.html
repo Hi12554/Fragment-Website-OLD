@@ -3,36 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b1710">
+    <meta name="theme-color" content="#0c0b0a">
     <title>Detailed Service Status | Fragment</title>
-    <link rel="icon" type="image/png" href="/Christmas-logo.png">
+    <link rel="icon" type="image/png" href="/fragment-halloween.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             color-scheme: dark;
-            --bg: #0b1710;
-            --surface: #14251a;
-            --surface-soft: rgba(255, 255, 255, 0.035);
-            --border: rgba(200, 231, 210, 0.13);
-            --text: #fffaf7;
-            --muted: #c7d4ca;
-            --subtle: #94a99a;
-            --accent: #d72f46;
-            --green: #35b86f;
-            --red: #ff6477;
-            --yellow: #f0c45a;
-            --neutral: #355342;
+            --bg: #0c0b0a;
+            --surface: #141210;
+            --surface-soft: rgba(255, 255, 255, 0.025);
+            --border: rgba(255, 255, 255, 0.09);
+            --text: #f2efe8;
+            --muted: #aaa198;
+            --subtle: #77716b;
+            --accent: #d77a2d;
+            --green: #35ce87;
+            --red: #f05c5c;
+            --yellow: #efbb45;
         }
         * { box-sizing: border-box; }
         body {
             min-height: 100vh;
             margin: 0;
             background:
-                radial-gradient(ellipse at 12% 0%, rgba(215, 47, 70, 0.18), transparent 42%),
-                radial-gradient(ellipse at 92% 10%, rgba(35, 128, 77, 0.15), transparent 38%),
-                linear-gradient(180deg, #102519, var(--bg) 460px);
+                radial-gradient(ellipse at 50% -15%, rgba(215, 122, 45, 0.13), transparent 46%),
+                linear-gradient(180deg, #0a0908, var(--bg) 420px);
             color: var(--text);
             font-family: Inter, sans-serif;
         }
@@ -49,26 +47,23 @@
         .services { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 22px; }
         .service-card, .panel { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
         .service-card { min-width: 0; padding: 18px 20px; }
-        .current-status { margin-top: 24px; }
-        .current-status h2 { font-size: 1.05rem; }
-        .current-status .services { margin-top: 12px; }
         .service-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
         .service-name { display: flex; align-items: center; gap: 10px; font-weight: 600; }
         .state-label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.8rem; }
         .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--subtle); }
-        [data-state="up"] .dot { background: var(--green); box-shadow: 0 0 10px rgba(53, 184, 111, 0.45); }
-        [data-state="down"] .dot { background: var(--red); box-shadow: 0 0 10px rgba(255, 100, 119, 0.45); }
+        [data-state="up"] .dot { background: var(--green); box-shadow: 0 0 10px rgba(53, 206, 135, 0.45); }
+        [data-state="down"] .dot { background: var(--red); box-shadow: 0 0 10px rgba(240, 92, 92, 0.45); }
         [data-state="maintenance"] .dot { background: var(--yellow); }
         .service-note { margin: 14px 0 10px; color: var(--muted); font-size: 0.77rem; }
         .timeline-scroll { min-width: 0; overflow-x: auto; padding: 2px 0 6px; }
         .timeline { display: grid; grid-template-columns: repeat(60, minmax(3px, 1fr)); gap: 3px; min-width: 650px; }
-        .day { position: relative; height: 24px; padding: 0; border: 0; border-radius: 3px; background: var(--neutral); cursor: pointer; }
+        .day { position: relative; height: 24px; padding: 0; border: 0; border-radius: 3px; background: #35332f; cursor: pointer; }
         .day:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-        .day[data-state="up"] { background: var(--green); }
-        .day[data-state="down"] { background: var(--red); }
-        .day[data-state="maintenance"] { background: var(--yellow); }
-        .day[data-state="partial"] { background: linear-gradient(180deg, var(--red) 0 48%, var(--green) 52%); }
-        .report-tooltip { position: fixed; z-index: 20; width: min(310px, calc(100vw - 24px)); padding: 13px 15px; border: 1px solid rgba(255, 100, 119, 0.55); border-radius: 11px; background: #14251a; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55); color: var(--text); pointer-events: none; }
+        .day[data-state="up"] { background: #35a977; }
+        .day[data-state="down"] { background: #d95050; }
+        .day[data-state="maintenance"] { background: #d6a632; }
+        .day[data-state="partial"] { background: linear-gradient(180deg, #d95050 0 48%, #35a977 52%); }
+        .report-tooltip { position: fixed; z-index: 20; width: min(310px, calc(100vw - 24px)); padding: 13px 15px; border: 1px solid rgba(215, 122, 45, 0.48); border-radius: 11px; background: #191612; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55); color: var(--text); pointer-events: none; }
         .report-tooltip[hidden] { display: none; }
         .report-tooltip-status { margin: 0; color: var(--green); font-size: 0.85rem; font-weight: 700; }
         .report-tooltip-status[data-state="down"] { color: var(--red); }
@@ -78,11 +73,11 @@
         .timeline-labels { display: flex; justify-content: space-between; min-width: 650px; margin-top: 7px; color: var(--subtle); font: 0.65rem 'JetBrains Mono', monospace; }
         .history-key { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 17px; color: var(--muted); font-size: 0.75rem; }
         .key-item { display: inline-flex; align-items: center; gap: 6px; }
-        .key-swatch { width: 9px; height: 9px; border-radius: 2px; background: var(--neutral); }
-        .key-swatch.up { background: var(--green); }
-        .key-swatch.down { background: var(--red); }
-        .key-swatch.partial { background: linear-gradient(90deg, var(--yellow) 0 50%, var(--green) 50%); }
-        .key-swatch.maintenance { background: var(--yellow); }
+        .key-swatch { width: 9px; height: 9px; border-radius: 2px; background: #35332f; }
+        .key-swatch.up { background: #35a977; }
+        .key-swatch.down { background: #d95050; }
+        .key-swatch.partial { background: linear-gradient(90deg, #d6a632 0 50%, #35a977 50%); }
+        .key-swatch.maintenance { background: #d6a632; }
         .notice { margin: 18px 0 0; color: var(--subtle); font-size: 0.78rem; line-height: 1.6; }
         .panel { margin-top: 24px; padding: 24px; }
         .panel-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; }
@@ -117,12 +112,6 @@
             <p class="eyebrow">Service status · 60 day history</p>
             <h1 id="page-title">Loading service status…</h1>
             <p class="updated" id="updated-time"></p>
-            <section class="current-status" aria-labelledby="current-status-heading">
-                <h2 id="current-status-heading">Current status</h2>
-                <div class="services" id="current-services" aria-live="polite">
-                    <p class="empty">Loading current status…</p>
-                </div>
-            </section>
             <div class="services" id="services" aria-live="polite"></div>
             <div class="history-key" aria-label="Timeline legend">
                 <span class="key-item"><span class="key-swatch up"></span>Operational</span>
@@ -162,8 +151,30 @@
 
         function getReportDay(report) {
             const value = report.reportedAt || report.startedAt;
-            if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}/.test(value)) return null;
-            return value.slice(0, 10);
+            if (typeof value !== 'string') return null;
+            const match = value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (!match) return null;
+            const [, year, month, day] = match;
+            const parsedDate = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+            if (parsedDate.getUTCFullYear() !== Number(year)
+                || parsedDate.getUTCMonth() !== Number(month) - 1
+                || parsedDate.getUTCDate() !== Number(day)) return null;
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        }
+
+        function getChicagoOffsetMinutes(day) {
+            const [year, month, date] = day.split('-').map(Number);
+            const parts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'America/Chicago',
+                timeZoneName: 'shortOffset'
+            }).formatToParts(new Date(Date.UTC(year, month - 1, date, 12)));
+            const zone = parts.find(part => part.type === 'timeZoneName')?.value;
+            if (zone === 'GMT') return 0;
+            const match = zone && zone.match(/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/);
+            if (!match) return null;
+            const [, sign, hours, minutes = '0'] = match;
+            const offset = Number(hours) * 60 + Number(minutes);
+            return sign === '-' ? -offset : offset;
         }
 
         function getReportTimestamp(report) {
@@ -179,10 +190,11 @@
             );
             const day = getReportDay(report);
             if (match && day) {
-                const [, rawHour, rawMinute, meridiem, zone] = match;
+                const [, rawHour, rawMinute, meridiem] = match;
                 let hour = Number(rawHour) % 12;
                 if (meridiem === 'PM') hour += 12;
-                const offsetMinutes = zone === 'CDT' ? -5 * 60 : -6 * 60;
+                const offsetMinutes = getChicagoOffsetMinutes(day);
+                if (offsetMinutes === null) return { value: Date.parse(`${day}T00:00:00Z`), precise: false };
                 return {
                     value: Date.parse(`${day}T${String(hour).padStart(2, '0')}:${rawMinute}:00Z`) - offsetMinutes * 60_000,
                     precise: true
@@ -202,6 +214,13 @@
             if (hours) parts.push(`${hours}h`);
             if (minutes || parts.length === 0) parts.push(`${minutes}m`);
             return parts.join(' ');
+        }
+
+        function getLatestReport(serviceName, incidents) {
+            return incidents
+                .map((report, index) => ({ report, index, timestamp: getReportTimestamp(report) }))
+                .filter(item => item.report.service === serviceName && item.timestamp)
+                .sort((a, b) => b.timestamp.value - a.timestamp.value || a.index - b.index)[0]?.report;
         }
 
         function getIssueDuration(events, eventIndex, now) {
@@ -225,6 +244,7 @@
             for (let offset = 0; offset < DAYS; offset += 1) {
                 const day = addDays(startDay, offset);
                 const key = dateKey(day);
+                const previousState = timelineState(latestEvent?.report);
                 while (eventIndex < events.length && events[eventIndex].day <= key) {
                     const event = events[eventIndex];
                     latestEvent = event;
@@ -244,6 +264,10 @@
                 const dayState = timelineState(latestEvent?.report);
                 const dayEvents = events.filter(event => event.day === key);
                 const segments = [];
+                const firstDayState = timelineState(dayEvents[0]?.report);
+                if (previousState !== 'unknown' && firstDayState !== 'unknown' && previousState !== firstDayState) {
+                    segments.push({ state: previousState, duration: null });
+                }
                 dayEvents.forEach(event => {
                     const eventState = timelineState(event.report);
                     if (segments.length && segments[segments.length - 1].state === eventState) return;
@@ -311,7 +335,7 @@
         }
 
         function renderService(serviceName, incidents, today, startDay) {
-            const latestReport = incidents.find(report => report.service === serviceName);
+            const latestReport = getLatestReport(serviceName, incidents);
             const currentState = validState(latestReport && latestReport.status);
             const card = document.createElement('article');
             card.className = 'service-card';
@@ -349,7 +373,7 @@
                 bar.className = 'day';
                 bar.dataset.state = segments.length > 1 ? 'partial' : state;
                 if (segments.length > 1) {
-                    const colors = { up: '#35b86f', down: '#ff6477', maintenance: '#f0c45a', unknown: '#355342' };
+                    const colors = { up: '#35a977', down: '#d95050', maintenance: '#d6a632', unknown: '#35332f' };
                     const segmentSize = 100 / segments.length;
                     const stops = segments.map((segment, index) => {
                         const start = (index * segmentSize).toFixed(2);
@@ -420,50 +444,6 @@
             return article;
         }
 
-        async function loadCurrentStatus() {
-            const servicesElement = document.getElementById('current-services');
-            try {
-                const response = await fetch('/api/bot-status', { cache: 'no-store' });
-                if (!response.ok) throw new Error('Current status request failed');
-                const data = await response.json();
-                const currentState = validState(data && data['External-status']);
-                const statusLabels = { up: 'Operational', down: 'Down', maintenance: 'Maintenance', unknown: 'Status unavailable' };
-                const reportedExternal = [...document.querySelectorAll('#services .service-card')]
-                    .find(card => card.querySelector('.service-name')?.textContent === 'External');
-                if (reportedExternal) {
-                    const stateLabel = reportedExternal.querySelector('.state-label');
-                    stateLabel.dataset.state = currentState;
-                    stateLabel.lastChild.textContent = statusLabels[currentState];
-                    return;
-                }
-
-                const card = document.createElement('article');
-                card.className = 'service-card';
-                const heading = document.createElement('div');
-                heading.className = 'service-heading';
-                const name = document.createElement('span');
-                name.className = 'service-name';
-                name.textContent = 'External';
-                const stateLabel = document.createElement('span');
-                stateLabel.className = 'state-label';
-                stateLabel.dataset.state = currentState;
-                const dot = document.createElement('span');
-                dot.className = 'dot';
-                dot.setAttribute('aria-hidden', 'true');
-                const stateText = document.createElement('span');
-                stateText.textContent = statusLabels[currentState];
-                stateLabel.append(dot, stateText);
-                heading.append(name, stateLabel);
-                card.append(heading);
-                servicesElement.replaceChildren(card);
-            } catch {
-                const error = document.createElement('p');
-                error.className = 'error';
-                error.textContent = 'Current status is unavailable.';
-                servicesElement.replaceChildren(error);
-            }
-        }
-
         async function loadReport() {
             const servicesElement = document.getElementById('services');
             const incidentsElement = document.getElementById('incident-list');
@@ -483,7 +463,7 @@
                     .map(report => report.service)
                     .filter(service => typeof service === 'string' && service.trim()))];
                 const currentStates = serviceNames.map(serviceName =>
-                    validState(allIncidents.find(report => report.service === serviceName)?.status)
+                    validState(getLatestReport(serviceName, allIncidents)?.status)
                 );
                 document.getElementById('page-title').textContent = serviceNames.length === 0
                     ? 'No recent incident reports'
@@ -517,7 +497,7 @@
             }
         }
 
-        loadReport().then(loadCurrentStatus);
+        loadReport();
     </script>
 </body>
 </html>

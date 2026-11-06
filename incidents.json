@@ -1,17 +1,31 @@
 {
   "incidents": [
     {
+      "service": "Fragment Velocity API",
+      "status": "up",
+      "reportedAt": "2026-11-6",
+      "reportedAtLabel": "Friday, November 5, 2026 5:05 PM CDT",
+      "summary": "Fragment Velocity API is now back up and is updated for the latest Roblox version."
+    },
+    {
+      "service": "External",
+      "status": "up",
+      "reportedAt": "2026-11-05T19:26:33-06:00",
+      "reportedAtLabel": "Thursday, November 5, 2026 7:22 PM CST",
+      "summary": "The Fragment External is now back up and is updated for the latest Roblox version."
+    },
+    {
       "service": "External",
       "status": "down",
       "reportedAt": "2026-11-5",
-      "reportedAtLabel": "Thursday, November 5, 2026 6:14 PM CDT",
+      "reportedAtLabel": "Thursday, November 5, 2026 6:14 PM CST",
       "summary": "Fragment External is now outdated and requires a Roblox downgrade to use it."
     },
     {
       "service": "Fragment Velocity API",
       "status": "down",
       "reportedAt": "2026-11-5",
-      "reportedAtLabel": "Thursday, November 5, 2026 6:14 PM CDT",
+      "reportedAtLabel": "Thursday, November 5, 2026 6:14 PM CST",
       "summary": "Fragment Velocity API is now outdated and requires a Roblox downgrade to use it."
     },
     {
